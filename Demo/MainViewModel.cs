@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,41 +9,47 @@ using Xamarin.Forms;
 
 namespace Demo
 {
-    public class MainViewModel : INotifyPropertyChanged
+    public class MainViewModel
     {
-        public event PropertyChangedEventHandler PropertyChanged;
+
+
+        public interface ListItem { }
+
+        public class ListImage : ListItem {
+            public ObservableCollection<string> ImageUrls { get; set; }
+        }
+
+        public class ListLabel : ListItem
+        {
+           public string LabelText { get; set; }
+        }
+
+        public ObservableCollection<ListItem> ListItems { get;set; } = new ObservableCollection<ListItem>();
 
         public MainViewModel()
         {
-            MyItemsSource = new ObservableCollection<View>()
-            {
-                new CachedImage() { Source = "c1.jpg", DownsampleToViewSize = true, Aspect = Aspect.AspectFill },
-                new CachedImage() { Source = "c2.jpg", DownsampleToViewSize = true, Aspect = Aspect.AspectFill },
-                new CachedImage() { Source = "c3.jpg", DownsampleToViewSize = true, Aspect = Aspect.AspectFill }
-            };
+            List<ListItem> items = new List<ListItem>();
+            ListImage listImage = new ListImage();
+            listImage.ImageUrls = new ObservableCollection<string>();
+            listImage.ImageUrls.Add("file://c1.jpg");
+            listImage.ImageUrls.Add("file://c2.jpg");
+            listImage.ImageUrls.Add("file://c3.jpg");
+            items.Add(listImage);
+            initLabelText(20, items);
+            ListItems = new ObservableCollection<ListItem>(items);
 
-            MyCommand = new Command(() =>
-            {
-                Debug.WriteLine("Position selected.");
-            });
         }
 
-        ObservableCollection<View> _myItemsSource;
-        public ObservableCollection<View> MyItemsSource { 
-            set {
-                _myItemsSource = value;
-                OnPropertyChanged("MyItemsSource");
-            }
-            get {
-                return _myItemsSource;
+
+        private void initLabelText(int containItemCount, List<ListItem> pendingItems) {
+            for (int index = 0; index < containItemCount;  ++index) {
+                ListLabel listLabel = new ListLabel();
+                listLabel.LabelText = "this is label:" + index;
+                pendingItems.Add(listLabel);
             }
         }
 
-        public Command MyCommand { protected set; get; }
 
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
     }
 }

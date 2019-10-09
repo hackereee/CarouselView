@@ -184,7 +184,7 @@ namespace CarouselView.FormsPlugin.Android
                 if (Element == null || viewPager == null) return;
 
                 SetPosition();
-                viewPager.Adapter = new PageAdapter(Element);
+                viewPager.Adapter = new PageAdapter(Element, _context);
                 viewPager.SetCurrentItem(Element.Position, false);
                 SetArrowsVisibility();
                 indicators?.SetViewPager(viewPager);
@@ -286,7 +286,7 @@ namespace CarouselView.FormsPlugin.Android
                     break;
                 case "ItemsSource":
                     SetPosition();
-                    viewPager.Adapter = new PageAdapter(Element);
+                    viewPager.Adapter = new PageAdapter(Element, _context);
                     viewPager.SetCurrentItem(Element.Position, false);
                     SetArrowsVisibility();
                     indicators?.SetViewPager(viewPager);
@@ -296,7 +296,7 @@ namespace CarouselView.FormsPlugin.Android
                         ((INotifyCollectionChanged)Element.ItemsSource).CollectionChanged += ItemsSource_CollectionChanged;
                     break;
                 case "ItemTemplate":
-                    viewPager.Adapter = new PageAdapter(Element);
+                    viewPager.Adapter = new PageAdapter(Element, _context);
                     viewPager.SetCurrentItem(Element.Position, false);
                     indicators?.SetViewPager(viewPager);
                     Element.SendPositionSelected();
@@ -421,7 +421,7 @@ namespace CarouselView.FormsPlugin.Android
                 orientationChanged = false;
             }
 
-            viewPager.Adapter = new PageAdapter(Element);
+            viewPager.Adapter = new PageAdapter(Element, _context);
             viewPager.SetCurrentItem(Element.Position, false);
 
             // InterPageSpacing BP
@@ -661,13 +661,15 @@ namespace CarouselView.FormsPlugin.Android
 
             // A local copy of ItemsSource so we can use CollectionChanged events
             public List<object> Source;
+            private Context _context;
 
             //string TAG_VIEWS = "TAG_VIEWS";
             //SparseArray<Parcelable> mViewStates = new SparseArray<Parcelable>();
             //ViewPager mViewPager;
 
-            public PageAdapter(CarouselViewControl element)
+            public PageAdapter(CarouselViewControl element, Context context)
             {
+                _context = context;
                 Element = element;
                 Source = Element.ItemsSource != null ? new List<object>(Element.ItemsSource.GetList()) : null;
             }
@@ -723,7 +725,7 @@ namespace CarouselView.FormsPlugin.Android
                 // HeightRequest fix
                 formsView.Parent = this.Element;
 
-                var nativeConverted = formsView.ToAndroid(new Rectangle(0, 0, Element.Width, Element.Height));
+                var nativeConverted = formsView.ToAndroid(new Rectangle(0, 0, Element.Width, Element.Height), context:_context.ApplicationContext);
                 nativeConverted.Tag = new Tag() { BindingContext = bindingContext }; //position;
 
                 //nativeConverted.SaveEnabled = true;
