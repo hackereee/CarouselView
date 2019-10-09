@@ -4,7 +4,7 @@ using Android.Content.PM;
 using Android.Views;
 using Android.OS;
 using CarouselView.FormsPlugin.Android;
-using FFImageLoading.Forms.Droid;
+using FFImageLoading.Forms.Platform;
 
 namespace Demo.Droid
 {
@@ -17,8 +17,8 @@ namespace Demo.Droid
 			TabLayoutResource = Resource.Layout.TabLayout;
 
 			base.OnCreate (savedInstanceState);
-
-			global::Xamarin.Forms.Forms.Init (this, savedInstanceState);
+            global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
+            global::Xamarin.Forms.Forms.Init (this, savedInstanceState);
 
 			CarouselViewRenderer.Init ();
             CachedImageRenderer.Init(true);

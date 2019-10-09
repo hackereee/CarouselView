@@ -3,9 +3,60 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="Demo.MainPage"
     xmlns:cv="clr-namespace:CarouselView.FormsPlugin.Abstractions;assembly=CarouselView.FormsPlugin.Abstractions"
-    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms">
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:demo="clr-namespace:Demo">
 
-    <cv:CarouselViewControl x:Name="carousel"
+    <ContentPage.BindingContext>
+        <demo:MainViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+
+            <DataTemplate x:Key="image">
+                <cv:CarouselViewControl x:Name="carousel"
+                                        Orientation="Horizontal"
+                                        ShowIndicators="True"
+                                        ShowArrows="False"
+                                        ItemsSource="{Binding ImageUrls}"
+                                        HeightRequest="300">
+                    <cv:CarouselViewControl.ItemTemplate>
+                        <DataTemplate>
+                            <ffimageloading:CachedImage 
+                                DownsampleToViewSize="True"
+                                Aspect="AspectFill"
+                                Source="{Binding .}"/>
+                        </DataTemplate>
+                    </cv:CarouselViewControl.ItemTemplate>
+                </cv:CarouselViewControl>
+            </DataTemplate>
+
+            <DataTemplate x:Key="ItemText">
+                <Frame>
+                    <Label
+                        Text="{Binding LabelText}"/>
+                </Frame>
+            </DataTemplate>
+
+            <demo:MineDataTemplateSelector
+                x:Key="TemplateSelector"
+               ImageTemplate="{StaticResource image}"
+                LabelTemplate="{StaticResource ItemText}"/>
+
+
+        </ResourceDictionary>
+
+    </ContentPage.Resources>
+
+    <CollectionView
+        ItemsLayout="VerticalList"
+        ItemsSource="{Binding ListItems}"
+        ItemTemplate="{StaticResource TemplateSelector}">
+        
+    </CollectionView>
+
+
+    <!--<cv:CarouselViewControl x:Name="carousel"
         ItemsSource="{Binding MyItemsSource}"
         ShowArrows="true"
         ShowIndicators="true"
@@ -14,7 +65,7 @@
         Scrolled="Handle_Scrolled"
         Orientation="Horizontal">
 
-        <!--<cv:CarouselViewControl.ItemsSource>
+        --><!--<cv:CarouselViewControl.ItemsSource>
            <x:Array Type="{x:Type View}">
 
                 <ScrollView>
@@ -29,8 +80,8 @@
                 <ffimageloading:CachedImage DownsampleToViewSize="true" Source = "c3.jpg" Aspect="AspectFill" />
 
            </x:Array>
-        </cv:CarouselViewControl.ItemsSource>-->
+        </cv:CarouselViewControl.ItemsSource>--><!--
 
-    </cv:CarouselViewControl>
+    </cv:CarouselViewControl>-->
 
 </ContentPage>
