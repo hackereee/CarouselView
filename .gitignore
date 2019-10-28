@@ -17,3 +17,4 @@ UWP/obj
 packages
 *.userprefs
 .vs/
+*.log
